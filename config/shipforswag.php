@@ -37,7 +37,7 @@ return [
     |
     */
 
-    'phone_home_enabled' => env('SHIPFORSWAG_PHONE_HOME', true),
+    'phone_home_enabled' => env('SHIPFORSWAG_PHONE_HOME', false),
 
     /*
     |--------------------------------------------------------------------------
