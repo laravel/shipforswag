@@ -47,7 +47,7 @@ class OgImageController extends Controller
 
         // Add subtle top accent bar (Laravel red gradient feel)
         $image->drawRectangle(0, 0, function ($rectangle) {
-            $rectangle->size(self::WIDTH, 8);
+            $rectangle->size(self::WIDTH, 12);
             $rectangle->background('f53003'); // Laravel red
         });
 
@@ -69,14 +69,14 @@ class OgImageController extends Controller
     }
 
     /**
-     * Add the user's avatar to the image.
+     * Add the user's avatar to the image (left side, centered with text).
      */
     protected function addAvatar(mixed $image, ImageManager $manager, string $username, int $centerY): void
     {
         $avatarUrl = $this->identity->getAvatarUrl(400);
-        $avatarSize = 180;
-        $avatarX = (self::WIDTH / 2) - ($avatarSize / 2);
-        $avatarY = $centerY - 140;
+        $avatarSize = 320;
+        $avatarX = 160; // Centered composition
+        $avatarY = $centerY - ($avatarSize / 2);
 
         try {
             $avatarData = Http::timeout(5)->get($avatarUrl)->body();
@@ -88,7 +88,7 @@ class OgImageController extends Controller
 
             // Draw shadow/border circle first
             $image->drawCircle((int) ($avatarX + $avatarSize / 2), (int) ($avatarY + $avatarSize / 2), function ($circle) use ($avatarSize) {
-                $circle->radius(($avatarSize / 2) + 4);
+                $circle->radius(($avatarSize / 2) + 6);
                 $circle->background('e2e8f0'); // slate-200 border
             });
 
@@ -151,8 +151,10 @@ class OgImageController extends Controller
 
         // Add first letter of username
         $initial = strtoupper(substr($username, 0, 1));
-        $image->text($initial, (int) $centerX, (int) $centerY, function (FontFactory $font) {
-            $font->size(72);
+        $fontBold = resource_path('fonts/InstrumentSans-Bold.ttf');
+        $image->text($initial, (int) $centerX, (int) $centerY, function (FontFactory $font) use ($fontBold) {
+            $font->filename($fontBold);
+            $font->size(140);
             $font->color('ffffff');
             $font->align('center');
             $font->valign('middle');
@@ -160,28 +162,41 @@ class OgImageController extends Controller
     }
 
     /**
-     * Add the text content (headline and username) to the image.
+     * Add the text content (right side of image, centered with avatar).
      */
     protected function addTextContent(mixed $image, ?string $displayName, ?string $username, int $centerY): void
     {
-        $textCenterX = self::WIDTH / 2;
-        $textY = $centerY + 80;
+        $textX = 530; // Aligned with centered composition
+        $textY = $centerY - 60;
+        $fontBold = resource_path('fonts/InstrumentSans-Bold.ttf');
+        $fontRegular = resource_path('fonts/InstrumentSans-Regular.ttf');
 
-        // Main headline - clean and bold
-        $headline = $displayName ? "{$displayName} shipped!" : 'You shipped!';
-        $image->text($headline, (int) $textCenterX, $textY, function (FontFactory $font) {
-            $font->size(48);
+        // Main headline - large and bold
+        $headline = $displayName ? "{$displayName}" : 'You';
+        $image->text($headline, $textX, $textY, function (FontFactory $font) use ($fontBold) {
+            $font->filename($fontBold);
+            $font->size(68);
             $font->color('0f172a'); // slate-900
-            $font->align('center');
+            $font->align('left');
             $font->valign('middle');
         });
 
-        // Username handle
+        // "shipped!" on second line - tighter spacing
+        $image->text('shipped!', $textX, $textY + 70, function (FontFactory $font) use ($fontBold) {
+            $font->filename($fontBold);
+            $font->size(68);
+            $font->color('f53003'); // Laravel red
+            $font->align('left');
+            $font->valign('middle');
+        });
+
+        // Username handle - tighter spacing
         if ($username) {
-            $image->text("@{$username}", (int) $textCenterX, $textY + 55, function (FontFactory $font) {
-                $font->size(24);
+            $image->text("@{$username}", $textX, $textY + 130, function (FontFactory $font) use ($fontRegular) {
+                $font->filename($fontRegular);
+                $font->size(32);
                 $font->color('64748b'); // slate-500
-                $font->align('center');
+                $font->align('left');
                 $font->valign('middle');
             });
         }
@@ -192,11 +207,14 @@ class OgImageController extends Controller
      */
     protected function addBranding(mixed $image): void
     {
-        // Laravel Cloud branding at bottom
-        $image->text('Deployed on Laravel Cloud', (int) (self::WIDTH / 2), self::HEIGHT - 50, function (FontFactory $font) {
-            $font->size(18);
+        $fontRegular = resource_path('fonts/InstrumentSans-Regular.ttf');
+
+        // Laravel Cloud branding at bottom right
+        $image->text('Deployed on Laravel Cloud', self::WIDTH - 60, self::HEIGHT - 35, function (FontFactory $font) use ($fontRegular) {
+            $font->filename($fontRegular);
+            $font->size(20);
             $font->color('94a3b8'); // slate-400
-            $font->align('center');
+            $font->align('right');
             $font->valign('middle');
         });
     }

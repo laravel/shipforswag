@@ -3,7 +3,7 @@
 @section('title', "{$displayName} shipped!")
 @section('description', "{$displayName} deployed their Laravel app on Laravel Cloud")
 @section('og_title', "You shipped, {$displayName}!")
-@section('og_description', "{{ $username }} deployed their Laravel app on Laravel Cloud")
+@section('og_description', "{$username} deployed their Laravel app on Laravel Cloud")
 
 @section('content')
 <main class="flex-1 flex items-center justify-center px-6 py-16">
