@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'hub_url' => env('SHIPFORSWAG_HUB_URL', 'https://shipforswag.com'),
+    'hub_url' => env('SHIPFORSWAG_HUB_URL', 'https://shipforswag.laravel.cloud'),
 
     /*
     |--------------------------------------------------------------------------
