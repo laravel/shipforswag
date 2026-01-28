@@ -24,20 +24,26 @@ Homestead.yaml
 Thumbs.db
 
 # AI coding assistant directories
+.agent/
 .agents/
 .claude/
+.cline/
 .codex/
+.commandcode/
 .continue/
 .crush/
 .cursor/
+.factory/
 .gemini/
 .github/skills/
 .goose/
 .kilocode/
+.kiro/
 .mcpjam/
 .neovate/
 .opencode/
 .openhands/
+.pi/
 .qoder/
 .qwen/
 .roo/
