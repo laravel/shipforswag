@@ -9,10 +9,20 @@ class IdentityService
     ) {}
 
     /**
-     * Get the GitHub username from config (auto-captured at build time).
+     * Get the GitHub username (from build-time cache or config fallback).
      */
     public function getUsername(): ?string
     {
+        // First check the build-time cached identity file
+        $cacheFile = base_path('bootstrap/cache/github-identity.php');
+        if (file_exists($cacheFile)) {
+            $username = require $cacheFile;
+            if (is_string($username) && $username !== '') {
+                return $username;
+            }
+        }
+
+        // Fall back to config/env (for local development)
         return config('shipforswag.github_username');
     }
 
