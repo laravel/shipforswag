@@ -22,3 +22,25 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI coding assistant directories
+.agents/
+.claude/
+.codex/
+.continue/
+.crush/
+.cursor/
+.gemini/
+.goose/
+.kilocode/
+.mcpjam/
+.neovate/
+.opencode/
+.openhands/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.windsurf/
+.zencoder/
+.github/skills/
