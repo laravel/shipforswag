@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PhoneHomeService
 {
-    protected const CACHE_KEY = 'shipforswag:phoned_home';
+    protected const COOKIE_NAME = 'shipforswag_phoned_home';
 
     public function __construct(
         protected IdentityService $identity
     ) {}
 
     /**
-     * Register this fork with the hub (once per deployment).
+     * Register this fork with the hub (once per browser session).
      * This is a fire-and-forget operation that won't block the request.
      */
     public function registerIfNeeded(): void
@@ -42,8 +42,8 @@ class PhoneHomeService
             return false;
         }
 
-        // Already phoned home this deployment
-        if (Cache::has(self::CACHE_KEY)) {
+        // Already phoned home this session (check cookie)
+        if (request()->cookie(self::COOKIE_NAME)) {
             return false;
         }
 
@@ -60,14 +60,13 @@ class PhoneHomeService
 
         try {
             Http::timeout(5)
-                ->async()
                 ->post("{$hubUrl}/api/forks/register", [
                     'github_username' => $username,
                     'deployed_url' => config('app.url'),
                 ]);
 
-            // Mark as phoned home (cache for 24 hours)
-            Cache::put(self::CACHE_KEY, true, 86400);
+            // Set cookie to prevent repeated phone-home calls (24 hour expiry)
+            Cookie::queue(self::COOKIE_NAME, '1', 60 * 24);
         } catch (\Throwable $e) {
             // Silently fail - this is non-critical functionality
             Log::debug('Phone home failed', ['error' => $e->getMessage()]);
@@ -79,6 +78,6 @@ class PhoneHomeService
      */
     public function hasPhonedHome(): bool
     {
-        return Cache::has(self::CACHE_KEY);
+        return (bool) request()->cookie(self::COOKIE_NAME);
     }
 }
