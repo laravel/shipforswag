@@ -24,6 +24,7 @@ Homestead.yaml
 Thumbs.db
 
 # AI coding assistant directories
+skills/
 .agent/
 .agents/
 .claude/
