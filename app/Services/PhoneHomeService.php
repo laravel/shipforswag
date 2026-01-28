@@ -72,12 +72,4 @@ class PhoneHomeService
             Log::debug('Phone home failed', ['error' => $e->getMessage()]);
         }
     }
-
-    /**
-     * Check if this fork has already phoned home.
-     */
-    public function hasPhonedHome(): bool
-    {
-        return (bool) request()->cookie(self::COOKIE_NAME);
-    }
 }

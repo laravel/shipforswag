@@ -32,6 +32,9 @@ class OgImageController extends Controller
             ->header('Cache-Control', 'public, max-age=3600');
     }
 
+    /**
+     * Generate the OG image PNG data.
+     */
     protected function generate(): string
     {
         $manager = ImageManager::gd();
@@ -65,6 +68,9 @@ class OgImageController extends Controller
         return $image->toPng()->toString();
     }
 
+    /**
+     * Add the user's avatar to the image.
+     */
     protected function addAvatar(mixed $image, ImageManager $manager, string $username, int $centerY): void
     {
         $avatarUrl = $this->identity->getAvatarUrl(400);
@@ -94,6 +100,9 @@ class OgImageController extends Controller
         }
     }
 
+    /**
+     * Create a circular version of the avatar using GD.
+     */
     protected function makeCircular(mixed $avatar, int $size): mixed
     {
         // Get the GD resource from the avatar
@@ -127,6 +136,9 @@ class OgImageController extends Controller
         return ImageManager::gd()->read($circular);
     }
 
+    /**
+     * Add a placeholder avatar when the real one cannot be loaded.
+     */
     protected function addPlaceholderAvatar(mixed $image, string $username, float $x, float $y, int $size): void
     {
         $centerX = $x + $size / 2;
@@ -147,6 +159,9 @@ class OgImageController extends Controller
         });
     }
 
+    /**
+     * Add the text content (headline and username) to the image.
+     */
     protected function addTextContent(mixed $image, ?string $displayName, ?string $username, int $centerY): void
     {
         $textCenterX = self::WIDTH / 2;
@@ -172,6 +187,9 @@ class OgImageController extends Controller
         }
     }
 
+    /**
+     * Add the Laravel Cloud branding footer.
+     */
     protected function addBranding(mixed $image): void
     {
         // Laravel Cloud branding at bottom
